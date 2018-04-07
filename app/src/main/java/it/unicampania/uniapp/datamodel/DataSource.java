@@ -13,8 +13,23 @@ public class DataSource {
     // Lista locale per simulare una ipotetica sorgente dati
     private Hashtable<String, Studente> elencoStudenti;
 
-    public DataSource() {
+    // Unica instanza
+    private static DataSource instance = null;
+
+    // Costruttore privato
+    private DataSource() {
         elencoStudenti = new Hashtable<>();
+        popolaDataSource();
+    }
+
+    /**
+     * Ottiene il riferimento alla sorgente dati
+     * @return restituisce l'instanza corrente
+     */
+    private static DataSource getInstance() {
+        if (instance == null)
+            instance = new DataSource();
+        return instance;
     }
 
     /**
@@ -57,6 +72,14 @@ public class DataSource {
                 risultato.add(elemento.getValue());
         }
         return risultato;
+    }
+
+    // Popolo il data source con dati di prova
+    private void popolaDataSource() {
+        elencoStudenti.put("A13001257", new Studente("A13001257", "Esposito", "Gennaro", 28, 26.5));
+        elencoStudenti.put("A13000876", new Studente("A13000876", "Rossi", "Mario", 16, 22.3));
+        elencoStudenti.put("A14001234", new Studente("A13001234", "Bianchi", "Luca", 38, 28.6));
+        elencoStudenti.put("A13008754", new Studente("A13008764", "Smith", "John", 90, 27.5));
     }
 
 }
