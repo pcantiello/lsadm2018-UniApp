@@ -1,9 +1,11 @@
 package it.unicampania.uniapp.datamodel;
 
+import java.io.Serializable;
+
 /**
  * Classe per rappresentare uno studente
  */
-public class Studente {
+public class Studente implements Serializable {
 
     // Attributi
     private String matricola;
