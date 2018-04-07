@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">UniApp</string>
+    <string name="matricola">Matricola:</string>
+    <string name="cognome">Cognome:</string>
+    <string name="nome">Nome:</string>
+    <string name="cfu">CFU:</string>
+    <string name="media">Media:</string>
 </resources>
