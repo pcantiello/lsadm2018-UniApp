@@ -26,7 +26,7 @@ public class DataSource {
      * Ottiene il riferimento alla sorgente dati
      * @return restituisce l'instanza corrente
      */
-    private static DataSource getInstance() {
+    public static DataSource getInstance() {
         if (instance == null)
             instance = new DataSource();
         return instance;
