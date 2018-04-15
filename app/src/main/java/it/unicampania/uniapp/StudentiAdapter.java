@@ -69,4 +69,13 @@ public class StudentiAdapter extends BaseAdapter {
         return view;
     }
 
+    /**
+     * Imposta un nuovo set di dati
+     * @param elencoStudenti elenco degli studenti da visualizzare
+     */
+    public void setElencoStudenti(List<Studente> elencoStudenti) {
+        this.elencoStudenti = elencoStudenti;
+        notifyDataSetChanged();
+    }
+
 }

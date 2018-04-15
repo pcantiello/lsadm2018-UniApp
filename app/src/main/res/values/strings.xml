@@ -5,4 +5,8 @@
     <string name="nome">Nome:</string>
     <string name="cfu">CFU:</string>
     <string name="media">Media:</string>
+    <string name="filtro">Filtro:</string>
+    <string name="filtra">Filtra</string>
+    <string name="aiuto_filtro">prefisso matricola</string>
+    <string name="filtro_corto">Il filtro deve contenere almeno tre caratteri</string>
 </resources>
