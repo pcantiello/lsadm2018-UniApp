@@ -1,8 +1,10 @@
 package it.unicampania.uniapp;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -22,14 +24,24 @@ public class ListaStudentiActivity extends AppCompatActivity {
     private ListView vListaStudenti;
     private TextView vFiltro;
     private Button vApplicaFiltro;
+    private FloatingActionButton vAggiungi;
 
     // Adapter e data source
     private StudentiAdapter adapter;
     private DataSource dataSource;
 
-    // Chiave per il passaggio parametri alla activity di dettaglio
+    // Chiave per il passaggio parametri alle activity di dettaglio
     private final String EXTRA_STUDENTE = "studente";
-    private final String FILTRO_INIZIALE = "A13";
+
+    // Costanti con i result code
+    private final int REQ_ADD_STUDENTE = 1;
+    private final int REQ_EDIT_STUDENTE = 2;
+
+    private final String TAG = "ListaStudenti";
+
+    // Filtro attuale
+    private String filtroCorrente = "A13";
+    private String matricolaCorrente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +52,10 @@ public class ListaStudentiActivity extends AppCompatActivity {
         vListaStudenti = findViewById(R.id.listaStudenti);
         vFiltro = findViewById(R.id.editPrefisso);
         vApplicaFiltro = findViewById(R.id.btnFiltra);
+        vAggiungi = findViewById(R.id.fabAggiungi);
 
         // Imposto la scritta del filtro iniziale
-        vFiltro.setText(FILTRO_INIZIALE);
+        vFiltro.setText(filtroCorrente);
 
         // Disabilito la tastiera all'avvio dell'activity
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -51,7 +64,7 @@ public class ListaStudentiActivity extends AppCompatActivity {
         dataSource = DataSource.getInstance();
 
         // Creo l'adapter
-        adapter = new StudentiAdapter(this, dataSource.getElencoStudenti(FILTRO_INIZIALE));
+        adapter = new StudentiAdapter(this, dataSource.getElencoStudenti(filtroCorrente));
 
         // Associo l'adapter alla listview
         vListaStudenti.setAdapter(adapter);
@@ -78,15 +91,15 @@ public class ListaStudentiActivity extends AppCompatActivity {
         vApplicaFiltro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String filtro = vFiltro.getText().toString();
-                if (filtro.length() < 3) {
+                filtroCorrente = vFiltro.getText().toString();
+                if (filtroCorrente.length() < 3) {
                     Toast.makeText(getApplicationContext(), R.string.filtro_corto, Toast.LENGTH_SHORT).show();
                     // Riporto il focus sull'EditText
                     vFiltro.requestFocus();
                 } else {
 
                     // Imposto il nuovo set di dati
-                    adapter.setElencoStudenti(dataSource.getElencoStudenti(filtro));
+                    adapter.setElencoStudenti(dataSource.getElencoStudenti(filtroCorrente));
 
                     // Nascondo la tastiera
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
@@ -94,5 +107,56 @@ public class ListaStudentiActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Imposto l'azione relativa al pulsante Aggiungi
+        vAggiungi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditStudenteActivity.class);
+                startActivityForResult(intent, REQ_ADD_STUDENTE);
+            }
+        });
+    }
+
+    // Processo dei valori di ritorno dalle altre activiy
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+
+            case REQ_ADD_STUDENTE :     // Activity di aggiunta
+                if (resultCode == RESULT_OK) {   // Pulsante Ok premuto
+
+                    // Estraggo le informazioni sullo studente da aggiungere
+                    Studente studente = (Studente) data.getSerializableExtra(EXTRA_STUDENTE);
+
+                    if (studente != null) {
+                        // Aggiungo lo studente al datasource
+                        dataSource.addStudente(studente);
+                        // Imposto il nuovo set di dati
+                        adapter.setElencoStudenti(dataSource.getElencoStudenti(filtroCorrente));
+                    }
+                }
+                break;
+
+            case REQ_EDIT_STUDENTE :    // Activity di modifica
+                if (resultCode == RESULT_OK) {   // Pulsante Ok premuto
+
+                    // Estraggo le informazioni sullo studente da modificare
+                    Studente studente = (Studente) data.getSerializableExtra(EXTRA_STUDENTE);
+
+                    if (studente != null) {
+                        // Sostituisco lo studente nel datasource
+                        dataSource.deleteStudente(matricolaCorrente);
+                        dataSource.addStudente(studente);
+                        // Imposto il nuovo set di dati
+                        adapter.setElencoStudenti(dataSource.getElencoStudenti(filtroCorrente));
+                    }
+                }
+                break;
+
+            default:
+                Log.v(TAG, "Result code non valido");
+                break;
+        }
     }
 }
