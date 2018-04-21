@@ -5,6 +5,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -116,6 +119,10 @@ public class ListaStudentiActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQ_ADD_STUDENTE);
             }
         });
+
+        // Imposto il context menu sulle righe della listview
+        registerForContextMenu(vListaStudenti);
+
     }
 
     // Processo dei valori di ritorno dalle altre activiy
@@ -157,6 +164,46 @@ public class ListaStudentiActivity extends AppCompatActivity {
             default:
                 Log.v(TAG, "Result code non valido");
                 break;
+        }
+
+    }
+
+    // Creazione del context menu
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.lista_studenti, menu);
+    }
+
+    // Selezione di un elemento nel context menu
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        // All'interno di info.position posso leggere la posizione dell'elemento selezionato
+
+        switch (item.getItemId()) {
+
+            case R.id.itemDelete:
+                // Eliminazione studente
+                dataSource.deleteStudente(adapter.getItem(info.position).getMatricola());
+                adapter.setElencoStudenti(dataSource.getElencoStudenti(filtroCorrente));
+                return true;
+
+            case R.id.itemEdit:
+                // Modifica studente. Chiedo lo studente all'adapter e lo passo all'altra activiy
+                Studente studente = adapter.getItem(info.position);
+                matricolaCorrente = studente.getMatricola();    // Salvo la matricola per poterla eventualmente modificare
+                Intent intent = new Intent(getApplicationContext(), EditStudenteActivity.class);
+                intent.putExtra(EXTRA_STUDENTE, studente);
+                // Faccio partire l'activiy in modalità edit
+                startActivityForResult(intent, REQ_EDIT_STUDENTE);
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 }

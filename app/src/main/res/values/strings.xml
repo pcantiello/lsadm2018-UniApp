@@ -15,4 +15,6 @@
     <string name="hintCFU">crediti</string>
     <string name="hintMedia">media</string>
     <string name="dati_obbligatori">Tutti i dati sono obbligatori</string>
+    <string name="itemEdit">Modifica</string>
+    <string name="itemDelete">Elimina</string>
 </resources>

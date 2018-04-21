@@ -39,7 +39,7 @@ public class StudentiAdapter extends BaseAdapter {
 
     // Invocato per ottenere l'iesimo elemento
     @Override
-    public Object getItem(int i) {
+    public Studente getItem(int i) {
         return elencoStudenti.get(i);
     }
 

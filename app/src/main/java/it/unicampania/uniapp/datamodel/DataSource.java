@@ -79,7 +79,7 @@ public class DataSource {
         elencoStudenti.put("A13001257", new Studente("A13001257", "Esposito", "Gennaro", 28, 26.5));
         elencoStudenti.put("A13000876", new Studente("A13000876", "Rossi", "Mario", 16, 22.3));
         elencoStudenti.put("A14001234", new Studente("A13001234", "Bianchi", "Luca", 38, 28.6));
-        elencoStudenti.put("A13008754", new Studente("A13008764", "Smith", "John", 90, 27.5));
+        elencoStudenti.put("A13008764", new Studente("A13008764", "Smith", "John", 90, 27.5));
     }
 
 }
